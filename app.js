@@ -106,23 +106,27 @@ app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 
-// --- 404 Handler ---
+
+// --- Error Handler ---
 app.use((err, req, res, next) => {
     console.error(err);
     if (res.headersSent) {
         return next(err);
     }
     let { statusCode = 500, message = "Something went wrong" } = err;
-    res.status(statusCode).render("error.ejs", { message });
-});
-
-// --- Error Handler ---
-app.use((err, req, res, next) => {
-    let { statusCode = 500, message = "Something went wrong" } = err;
-    res.status(statusCode).render("error.ejs", { message });
+    res.status(statusCode);
+    res.render("error.ejs", { message }, (renderErr, html) => {
+        if (renderErr) {
+            console.error("Error page itself failed to render:", renderErr);
+            return res.type("text").send(message);
+        }
+        res.send(html);
+    });
 });
 
 // --- Start Server ---
-app.listen(8080, () => {
-    console.log('Server is running on port 8080');
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
