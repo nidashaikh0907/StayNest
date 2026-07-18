@@ -16,10 +16,10 @@ module.exports.listingSchema = Joi.object({
                 "Mountains",
                 "Castles",
                 "Arctic",
-                "Camping",
+                "camping",
                 "farms",
                 "Domes",
-                "Boats",
+                "Boats"
             )
     }).required(),
 });
